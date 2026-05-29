@@ -3,6 +3,7 @@ import Home from "../pages/Home";
 import Search from "../pages/Search";
 import AnimeDetails from "../pages/AnimeDetails";
 import Upcoming from "../pages/Upcoming";
+import Seasonal from "../pages/Seasonal";
 
 function AppRoutes() {
   return (
@@ -11,8 +12,9 @@ function AppRoutes() {
       <Route path="/search" element={<Search />} />
       <Route path="/anime" element={<Navigate to="/" replace />} />
       <Route path="/anime/:id" element={<AnimeDetails />} />
+      <Route path="/upcoming" element={<Upcoming />} />
+      <Route path="/seasonal" element={<Seasonal />} />
       <Route path="*" element={<Navigate to="/" replace />} />
-      <Route path="/upcoming" element={<Upcoming />}/>
     </Routes>
   );
 }

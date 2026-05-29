@@ -1,0 +1,67 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light;
+  --bg: #eef2ff;
+  --bg-soft: #dbeafe;
+  --surface: #ffffff;
+  --surface-muted: #f8fafc;
+  --text: #0f172a;
+  --text-muted: #475569;
+  --ring: rgba(99, 102, 241, 0.5);
+  --border: rgba(15, 23, 42, 0.14);
+  --shadow: 0 20px 45px rgba(30, 41, 59, 0.12);
+}
+
+.dark {
+  color-scheme: dark;
+  --bg: #020617;
+  --bg-soft: #1e1b4b;
+  --surface: #0f172a;
+  --surface-muted: #111827;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --ring: rgba(129, 140, 248, 0.55);
+  --border: rgba(148, 163, 184, 0.2);
+  --shadow: 0 20px 50px rgba(2, 6, 23, 0.7);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(circle at top left, color-mix(in oklab, var(--bg-soft) 60%, transparent), transparent 45%),
+      radial-gradient(circle at top right, color-mix(in oklab, #6366f1 14%, transparent), transparent 35%),
+      var(--bg);
+    transition:
+      background-color 220ms ease,
+      color 220ms ease;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: "Outfit", "Segoe UI", sans-serif;
+    letter-spacing: -0.015em;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, #6366f1 45%, transparent);
+  }
+}

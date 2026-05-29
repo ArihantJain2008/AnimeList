@@ -12,11 +12,21 @@ export async function getTrendingAnime() {
 
           title {
             romaji
+            english
           }
+
+          description(asHtml: false)
+
+          bannerImage
 
           coverImage {
             large
+            medium
           }
+
+          averageScore
+
+          genres
         }
       }
     }
@@ -101,11 +111,17 @@ export async function searchAnime(search) {
 
           title {
             romaji
+            english
           }
 
           coverImage {
             large
+            medium
           }
+
+          averageScore
+
+          genres
         }
       }
     }
@@ -144,15 +160,21 @@ export async function getUpcomingAnime() {
 
           title {
             romaji
+            english
           }
 
           coverImage {
             large
+            medium
           }
 
           nextAiringEpisode {
             airingAt
           }
+
+          averageScore
+
+          genres
         }
       }
     }
@@ -164,6 +186,70 @@ export async function getUpcomingAnime() {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ query }),
+  });
+
+  const data = await response.json();
+
+  return data.data.Page.media;
+}
+
+export async function getSeasonalAnime(
+  season,
+  year,
+  genre
+) {
+  const query = `
+    query (
+      $season: MediaSeason
+      $seasonYear: Int
+      $genreIn: [String]
+    ) {
+      Page(page: 1, perPage: 20) {
+        media(
+          type: ANIME
+          season: $season
+          seasonYear: $seasonYear
+          genre_in: $genreIn
+        ) {
+          id
+
+          title {
+            romaji
+            english
+          }
+
+          coverImage {
+            large
+            medium
+          }
+
+          averageScore
+
+          genres
+        }
+      }
+    }
+  `;
+
+  const response = await fetch(API_URL, {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify({
+      query,
+
+      variables: {
+        season,
+        seasonYear: year,
+        genreIn:
+          genre && genre.trim() !== ""
+            ? [genre]
+            : null,
+      },
+    }),
   });
 
   const data = await response.json();
