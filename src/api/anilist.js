@@ -130,3 +130,43 @@ export async function searchAnime(search) {
 
   return data.data.Page.media;
 }
+
+export async function getUpcomingAnime() {
+  const query = `
+    query {
+      Page(page: 1, perPage: 20) {
+        media(
+          type: ANIME
+          sort: START_DATE
+          status: NOT_YET_RELEASED
+        ) {
+          id
+
+          title {
+            romaji
+          }
+
+          coverImage {
+            large
+          }
+
+          nextAiringEpisode {
+            airingAt
+          }
+        }
+      }
+    }
+  `;
+
+  const response = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query }),
+  });
+
+  const data = await response.json();
+
+  return data.data.Page.media;
+}

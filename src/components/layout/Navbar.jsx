@@ -35,6 +35,10 @@ function Navbar() {
                 >
                     Search
                 </Link>
+
+                <Link to="/upcoming">
+                    Upcoming
+                </Link>
             </div>
         </nav>
     );
