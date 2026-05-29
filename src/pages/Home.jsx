@@ -1,50 +1,67 @@
-import { useEffect, useState } from "react";
+    import { useEffect, useState } from "react";
 
-import Navbar from "../components/layout/Navbar";
-import AnimeCard from "../components/anime/AnimeCard";
+    import Navbar from "../components/layout/Navbar";
+    import AnimeCard from "../components/anime/AnimeCard";
 
-import { getTrendingAnime } from "../api/anilist";
+    import Loader from "../components/common/Loader";
+    import ErrorMessage from "../components/common/ErrorMessage";
 
-function Home() {
-  const [animeList, setAnimeList] = useState([]);
+    import { getTrendingAnime } from "../api/anilist";
 
-  useEffect(() => {
+    function Home() {
+    const [animeList, setAnimeList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
     async function fetchAnime() {
-      try {
+        try {
+        setLoading(true);
+
         const data = await getTrendingAnime();
-        setAnimeList(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error("Failed to load trending anime:", error);
-        setAnimeList([]);
-      }
+
+        setAnimeList(data);
+        } catch (err) {
+        setError("Failed to load anime.");
+        } finally {
+        setLoading(false);
+        }
     }
 
     fetchAnime();
-  }, []);
+    }, []);
 
-  return (
-    <>
-      <Navbar />
+    if (loading) return <Loader />;
 
-      <h1>Trending Anime</h1>
-      <p>Total Anime: {animeList.length}</p>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "20px",
-          padding: "20px",
-        }}
-      >
-        {animeList.map((anime) => (
-          <AnimeCard
-            key={anime.id}
-            anime={anime}
-          />
-        ))}
-      </div>
-    </>
-  );
-}
+    if (error)
+    return (
+        <ErrorMessage message={error} />
+    );
 
-export default Home;
+
+    return (
+        <>
+        <Navbar />
+
+        <h1>Trending Anime</h1>
+        <p>Total Anime: {animeList.length}</p>
+        <div
+            style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "20px",
+            padding: "20px",
+            }}
+        >
+            {animeList.map((anime) => (
+            <AnimeCard
+                key={anime.id}
+                anime={anime}
+            />
+            ))}
+        </div>
+        </>
+    );
+    }
+
+    export default Home;
