@@ -12,6 +12,7 @@ import Badge from "../components/ui/Badge";
 import Card from "../components/ui/Card";
 import SectionTitle from "../components/ui/SectionTitle";
 import { getAnimeDetails } from "../api/anilist";
+import { sanitizeDescriptionToText } from "../utils/descriptionHelpers";
 
 function AnimeDetails() {
   const { id } = useParams();
@@ -45,12 +46,9 @@ function AnimeDetails() {
   }, [id]);
 
   const cleanDescription = anime?.description
-    ? anime.description
-        .replace(/<br\s*\/?>/gi, "\n")
-        .replace(/<\/?[^>]+(>|$)/g, "")
-        .replace(/&quot;/g, '"')
-        .replace(/&#039;/g, "'")
-        .replace(/&amp;/g, "&")
+    ? sanitizeDescriptionToText(
+        anime.description
+      )
     : "No description available.";
 
   return (
@@ -74,10 +72,10 @@ function AnimeDetails() {
                   <img
                     src={anime.bannerImage}
                     alt={anime.title.romaji}
-                    className="h-44 w-full object-cover sm:h-60 lg:h-72"
+                    className="h-[34vh] w-full object-cover sm:h-[40vh] lg:h-[46vh]"
                   />
                 ) : (
-                  <div className="h-44 w-full bg-gradient-to-r from-indigo-500 to-blue-500 sm:h-60 lg:h-72" />
+                  <div className="h-[34vh] w-full bg-gradient-to-r from-indigo-500 to-blue-500 sm:h-[40vh] lg:h-[46vh]" />
                 )}
 
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/20 to-transparent" />

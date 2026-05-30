@@ -17,6 +17,7 @@ import {
   getTrendingAnime,
   getUpcomingAnime,
 } from "../api/anilist";
+import { sanitizeDescriptionToText } from "../utils/descriptionHelpers";
 
 const FEATURE_ROTATION_MS = 6000;
 
@@ -210,7 +211,10 @@ function Home() {
     featuredAnime?.coverImage?.medium;
 
   const featuredDescription = truncateText(
-    featuredAnime?.description
+    sanitizeDescriptionToText(
+      featuredAnime?.description,
+      ""
+    )
   );
 
   return (

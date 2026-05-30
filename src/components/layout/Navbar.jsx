@@ -8,9 +8,10 @@ import Button from "../ui/Button";
 
 const NAV_LINKS = [
   { label: "Home", to: "/" },
-  { label: "Search", to: "/search" },
   { label: "Seasonal", to: "/seasonal" },
+  { label: "Calendar", to: "/calendar" },
   { label: "Upcoming", to: "/upcoming" },
+  { label: "Search", to: "/search" },
 ];
 
 function Navbar() {
