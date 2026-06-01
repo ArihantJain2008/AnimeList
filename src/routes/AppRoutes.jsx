@@ -5,6 +5,7 @@ import AnimeDetails from "../pages/AnimeDetails";
 import Upcoming from "../pages/Upcoming";
 import Seasonal from "../pages/Seasonal";
 import ReleaseCalendar from "../pages/ReleaseCalendar";
+import MyList from "../pages/MyList";
 
 function AppRoutes() {
   return (
@@ -15,6 +16,7 @@ function AppRoutes() {
       <Route path="/anime/:id" element={<AnimeDetails />} />
       <Route path="/upcoming" element={<Upcoming />} />
       <Route path="/seasonal" element={<Seasonal />} />
+      <Route path="/my-list" element={<MyList />} />
       <Route
         path="/releases"
         element={

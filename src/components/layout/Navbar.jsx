@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: "Seasonal", to: "/seasonal" },
   { label: "Calendar", to: "/calendar" },
   { label: "Upcoming", to: "/upcoming" },
+  { label: "My List", to: "/my-list" },
   { label: "Search", to: "/search" },
 ];
 

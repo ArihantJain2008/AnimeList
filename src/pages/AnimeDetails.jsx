@@ -1,7 +1,4 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import Navbar from "../components/layout/Navbar";
@@ -13,12 +10,13 @@ import Card from "../components/ui/Card";
 import SectionTitle from "../components/ui/SectionTitle";
 import { getAnimeDetails } from "../api/anilist";
 import { sanitizeDescriptionToText } from "../utils/descriptionHelpers";
+import useMyList from "../hooks/useMyList";
 
 function AnimeDetails() {
   const { id } = useParams();
+  const { addAnime } = useMyList();
   const [anime, setAnime] = useState(null);
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -29,13 +27,8 @@ function AnimeDetails() {
         const data = await getAnimeDetails(id);
         setAnime(data || null);
       } catch (err) {
-        console.error(
-          "Failed to fetch anime details:",
-          err
-        );
-        setError(
-          "Could not load anime details."
-        );
+        console.error("Failed to fetch anime details:", err);
+        setError("Could not load anime details.");
         setAnime(null);
       } finally {
         setLoading(false);
@@ -46,9 +39,7 @@ function AnimeDetails() {
   }, [id]);
 
   const cleanDescription = anime?.description
-    ? sanitizeDescriptionToText(
-        anime.description
-      )
+    ? sanitizeDescriptionToText(anime.description)
     : "No description available.";
 
   return (
@@ -57,13 +48,9 @@ function AnimeDetails() {
 
       <main className="pb-16 pt-8">
         <PageContainer>
-          {loading && (
-            <Loader message="Loading anime details..." />
-          )}
+          {loading && <Loader message="Loading anime details..." />}
 
-          {!loading && error && (
-            <ErrorMessage message={error} />
-          )}
+          {!loading && error && <ErrorMessage message={error} />}
 
           {!loading && !error && anime && (
             <>
@@ -88,8 +75,7 @@ function AnimeDetails() {
                     {anime.title.romaji}
                   </h1>
                   {anime.title.english &&
-                    anime.title.english !==
-                      anime.title.romaji && (
+                    anime.title.english !== anime.title.romaji && (
                       <p className="mt-2 text-sm text-slate-200">
                         {anime.title.english}
                       </p>
@@ -97,14 +83,14 @@ function AnimeDetails() {
                 </div>
               </section>
 
-              <section className="mt-8 grid gap-6 lg:grid-cols-[260px,1fr]">
-                <Card className="overflow-hidden p-3">
+              <section className="mt-8 grid gap-6">
+                {/* <Card className="overflow-hidden p-3">
                   <img
                     src={anime.coverImage.extraLarge}
                     alt={anime.title.romaji}
-                    className="h-auto w-full rounded-xl object-cover"
+                    className="h-ful w-full rounded-xl object-cover"
                   />
-                </Card>
+                </Card> */}
 
                 <div className="space-y-6">
                   <Card className="p-5 sm:p-6">
@@ -153,18 +139,37 @@ function AnimeDetails() {
                         {Array.isArray(anime.genres) &&
                         anime.genres.length > 0 ? (
                           anime.genres.map((genre) => (
-                            <Badge
-                              key={genre}
-                              variant="default"
-                            >
+                            <Badge key={genre} variant="default">
                               {genre}
                             </Badge>
                           ))
                         ) : (
-                          <Badge variant="muted">
-                            No genres listed
-                          </Badge>
+                          <Badge variant="muted">No genres listed</Badge>
                         )}
+                      </div>
+                      <div className="mt-6">
+                        <label className="mb-2 block text-sm font-medium">
+                          Add To My List
+                        </label>
+
+                        <select
+                          className="rounded-lg border border-slate-600 bg-slate-800 px-4 py-2"
+                          onChange={(e) => {
+                            if (e.target.value) {
+                              addAnime(anime, e.target.value);
+                            }
+                          }}
+                        >
+                          <option value="">Select Status</option>
+
+                          <option value="Watching">Watching</option>
+
+                          <option value="Completed">Completed</option>
+
+                          <option value="Plan To Watch">Plan To Watch</option>
+
+                          <option value="Dropped">Dropped</option>
+                        </select>
                       </div>
                     </div>
                   </Card>
