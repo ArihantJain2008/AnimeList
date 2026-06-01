@@ -8,6 +8,7 @@ import ReleaseCalendar from "../pages/ReleaseCalendar";
 import MyList from "../pages/MyList";
 import Stats from "../pages/Stats";
 import Settings from "../pages/Settings";
+import Notifications from "../pages/Notifications";
 
 function AppRoutes() {
   return (
@@ -20,12 +21,11 @@ function AppRoutes() {
       <Route path="/seasonal" element={<Seasonal />} />
       <Route path="/my-list" element={<MyList />} />
       <Route path="/stats" element={<Stats />} />
+      <Route path="/notifications" element={<Notifications />} />
       <Route path="/settings" element={<Settings />} />
-      <Route
-        path="/releases"
-        element={
-          <Navigate to="/calendar" replace />
-        }
+      <Route path="/releases" 
+      element={ <Navigate to="/calendar" replace />
+}
       />
       <Route
         path="/calendar"

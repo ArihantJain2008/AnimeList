@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 
+import {
+  addNotification,
+} from "../utils/notifications";
+
 const STORAGE_KEY = "anime-tracker-my-list";
 
 function useMyList() {
@@ -21,6 +25,10 @@ function useMyList() {
 
   function addAnime(anime, status) {
     const exists = myList.find((item) => item.id === anime.id);
+
+    addNotification(
+  `${anime.title.romaji} added to ${status}`
+);
 
     if (exists) {
       updateStatus(anime.id, status);
@@ -112,6 +120,10 @@ function useMyList() {
   );
 
   saveList(updatedList);
+
+  addNotification(
+  `${anime.title} added to Favorites`
+);
 }
 
   function toggleFavorite(id) {
@@ -127,6 +139,10 @@ function useMyList() {
   );
 
   saveList(updatedList);
+
+  addNotification(
+  `${anime.title} added to Favorites`
+);
 }
 
   return {

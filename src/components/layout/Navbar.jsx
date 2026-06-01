@@ -22,12 +22,9 @@ function Navbar() {
 
   const [theme] = useState(() => getTheme());
 
-useEffect(() => {
-  document.documentElement.classList.toggle(
-    "dark",
-    theme === "dark"
-  );
-}, [theme]);
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
 
   useEffect(() => {
     function handleScroll() {
@@ -81,7 +78,13 @@ useEffect(() => {
           </nav>
 
           <div className="flex items-center gap-2">
-            
+            <Link
+              to="/notifications"
+              className="relative flex h-10 w-10 items-center justify-center rounded-full bg-slate-800 text-lg"
+            >
+              🔔
+            </Link>
+
             <ProfileMenu />
 
             <Button
