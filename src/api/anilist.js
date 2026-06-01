@@ -68,13 +68,58 @@ export async function getAnimeDetails(id) {
 
         status
 
-        genres
+genres
 
-        bannerImage
+bannerImage
 
-        coverImage {
-          extraLarge
+studios(isMain: true) {
+  nodes {
+    id
+    name
+  }
+}
+
+        characters(perPage: 12) {
+          edges {
+            role
+
+            node {
+              id
+
+              name {
+                full
+              }
+
+              image {
+                large
+              }
+            }
+
+            voiceActors(language: JAPANESE) {
+              name {
+                full
+              }
+            }
+          }
         }
+
+        relations {
+  edges {
+    relationType
+
+    node {
+      id
+
+      title {
+        romaji
+      }
+
+      coverImage {
+        large
+      }
+    }
+  }
+}
       }
     }
   `;
@@ -193,11 +238,7 @@ export async function getUpcomingAnime() {
   return data.data.Page.media;
 }
 
-export async function getSeasonalAnime(
-  season,
-  year,
-  genre
-) {
+export async function getSeasonalAnime(season, year, genre) {
   const query = `
     query (
       $season: MediaSeason
@@ -244,10 +285,7 @@ export async function getSeasonalAnime(
       variables: {
         season,
         seasonYear: year,
-        genreIn:
-          genre && genre.trim() !== ""
-            ? [genre]
-            : null,
+        genreIn: genre && genre.trim() !== "" ? [genre] : null,
       },
     }),
   });
@@ -299,13 +337,9 @@ export async function getReleaseSchedule() {
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
 
-  const nowInSeconds = Math.floor(
-    todayStart.getTime() / 1000
-  );
+  const nowInSeconds = Math.floor(todayStart.getTime() / 1000);
   const nextWeekInSeconds = Math.floor(
-    (todayStart.getTime() +
-      7 * 24 * 60 * 60 * 1000) /
-      1000
+    (todayStart.getTime() + 7 * 24 * 60 * 60 * 1000) / 1000,
   );
 
   const perPage = 50;
@@ -333,43 +367,32 @@ export async function getReleaseSchedule() {
     });
 
     if (!response.ok) {
-      throw new Error(
-        "Unable to load release schedule."
-      );
+      throw new Error("Unable to load release schedule.");
     }
 
     const data = await response.json();
 
-    if (
-      Array.isArray(data?.errors) &&
-      data.errors.length > 0
-    ) {
+    if (Array.isArray(data?.errors) && data.errors.length > 0) {
       throw new Error(
-        data.errors[0]?.message ||
-          "Unable to load release schedule."
+        data.errors[0]?.message || "Unable to load release schedule.",
       );
     }
 
     const pageData = data?.data?.Page;
-    const schedules =
-      pageData?.airingSchedules;
+    const schedules = pageData?.airingSchedules;
 
     if (Array.isArray(schedules)) {
       releaseSchedule.push(...schedules);
     }
 
-    hasNextPage = Boolean(
-      pageData?.pageInfo?.hasNextPage
-    );
+    hasNextPage = Boolean(pageData?.pageInfo?.hasNextPage);
     page += 1;
   }
 
   return releaseSchedule;
 }
 
-export async function getReleaseCalendar(
-  referenceDate = new Date()
-) {
+export async function getReleaseCalendar(referenceDate = new Date()) {
   const query = `
     query (
       $page: Int
@@ -408,26 +431,20 @@ export async function getReleaseCalendar(
     }
   `;
 
-  const parsedReference = new Date(
-    referenceDate
-  );
+  const parsedReference = new Date(referenceDate);
   const monthStart = new Date(
     parsedReference.getFullYear(),
     parsedReference.getMonth(),
-    1
+    1,
   );
   const nextMonthStart = new Date(
     parsedReference.getFullYear(),
     parsedReference.getMonth() + 1,
-    1
+    1,
   );
 
-  const rangeStart =
-    Math.floor(monthStart.getTime() / 1000) -
-    1;
-  const rangeEnd = Math.floor(
-    nextMonthStart.getTime() / 1000
-  );
+  const rangeStart = Math.floor(monthStart.getTime() / 1000) - 1;
+  const rangeEnd = Math.floor(nextMonthStart.getTime() / 1000);
 
   const perPage = 50;
   const maxPages = 100;
@@ -454,27 +471,19 @@ export async function getReleaseCalendar(
     });
 
     if (!response.ok) {
-      throw new Error(
-        "Unable to load release calendar."
-      );
+      throw new Error("Unable to load release calendar.");
     }
 
     const data = await response.json();
 
-    if (
-      Array.isArray(data?.errors) &&
-      data.errors.length > 0
-    ) {
+    if (Array.isArray(data?.errors) && data.errors.length > 0) {
       throw new Error(
-        data.errors[0]?.message ||
-          "Unable to load release calendar."
+        data.errors[0]?.message || "Unable to load release calendar.",
       );
     }
 
     const pageData = data?.data?.Page;
-    const schedules = Array.isArray(
-      pageData?.airingSchedules
-    )
+    const schedules = Array.isArray(pageData?.airingSchedules)
       ? pageData.airingSchedules
       : [];
 
@@ -482,19 +491,13 @@ export async function getReleaseCalendar(
       releaseCalendar.push(...schedules);
     }
 
-    hasNextPage = Boolean(
-      pageData?.pageInfo?.hasNextPage
-    );
+    hasNextPage = Boolean(pageData?.pageInfo?.hasNextPage);
 
-    const reachedEndOfMonthResults =
-      schedules.length < perPage;
+    const reachedEndOfMonthResults = schedules.length < perPage;
 
     page += 1;
 
-    if (
-      !hasNextPage ||
-      reachedEndOfMonthResults
-    ) {
+    if (!hasNextPage || reachedEndOfMonthResults) {
       break;
     }
   }

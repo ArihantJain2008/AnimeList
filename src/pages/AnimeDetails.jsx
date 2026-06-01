@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 import Navbar from "../components/layout/Navbar";
 import PageContainer from "../components/layout/PageContainer";
@@ -147,6 +147,20 @@ function AnimeDetails() {
                           <Badge variant="muted">No genres listed</Badge>
                         )}
                       </div>
+
+                      <div className="mt-6">
+                        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+                          Studio
+                        </p>
+
+                        <div className="flex flex-wrap gap-2">
+                          {anime?.studios?.nodes?.map((studio) => (
+                            <Badge key={studio.id} variant="default">
+                              {studio.name}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
                       <div className="mt-6">
                         <label className="mb-2 block text-sm font-medium">
                           Add To My List
@@ -182,6 +196,87 @@ function AnimeDetails() {
                       {cleanDescription}
                     </p>
                   </Card>
+
+                  <Card className="p-5 sm:p-6">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                      Characters & Voice Actors
+                    </h3>
+
+                    <div className="mt-6 grid gap-4 md:grid-cols-2">
+                      {anime?.characters?.edges?.map((character) => (
+                        <div
+                          key={character.node.id}
+                          className="flex items-center gap-4 rounded-xl border border-slate-200/70 p-3 dark:border-slate-700"
+                        >
+                          <img
+                            src={character.node.image.large}
+                            alt={character.node.name.full}
+                            className="h-16 w-16 rounded-lg object-cover"
+                          />
+
+                          <div className="min-w-0">
+                            <h4 className="truncate font-semibold text-slate-900 dark:text-slate-100">
+                              {character.node.name.full}
+                            </h4>
+
+                            <p className="text-xs text-indigo-500">
+                              {character.role}
+                            </p>
+
+                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                              VA:{" "}
+                              {character.voiceActors?.[0]?.name?.full ||
+                                "Unknown"}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+
+                  <Card className="p-5 sm:p-6">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                      Related Anime
+                    </h3>
+
+                    <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {anime?.relations?.edges
+                        ?.slice(0, 12)
+                        ?.map((relation) => (
+                          <Link
+                            key={relation.node.id}
+                            to={`/anime/${relation.node.id}`}
+                            className="overflow-hidden rounded-xl border border-slate-200/70 transition hover:scale-[1.02] hover:shadow-lg dark:border-slate-700"
+                          >
+                            <img
+                              src={relation.node.coverImage.large}
+                              alt={relation.node.title.romaji}
+                              className="h-52 w-full object-cover"
+                            />
+
+                            <div className="p-3">
+                              <p className="text-xs font-semibold uppercase tracking-wide text-indigo-500">
+                                {relation.relationType}
+                              </p>
+
+                              <h4 className="mt-2 line-clamp-2 font-semibold text-slate-900 dark:text-slate-100">
+                                {relation.node.title.romaji}
+                              </h4>
+                            </div>
+                          </Link>
+                        ))}
+                    </div>
+                  </Card>
+
+                  <div className="rounded-xl border border-slate-200/70 bg-slate-100/70 p-3 dark:border-slate-700 dark:bg-slate-800/70">
+                    <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                      Studio
+                    </p>
+
+                    <p className="mt-1 text-base font-semibold text-slate-900 dark:text-slate-100">
+                      {anime?.studios?.nodes?.[0]?.name || "Unknown"}
+                    </p>
+                  </div>
                 </div>
               </section>
             </>
