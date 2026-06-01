@@ -4,7 +4,7 @@ import useMyList from "../hooks/useMyList";
 import { useState } from "react";
 
 function MyList() {
-  const { myList, updateProgress } = useMyList();
+  const { myList, updateProgress, updateRating } = useMyList();
   const [filter, setFilter] = useState("All");
 
   const filteredAnime =
@@ -86,6 +86,31 @@ function MyList() {
                       >
                         +
                       </button>
+                    </div>
+
+                    <div className="mt-4">
+                      <p className="text-sm text-slate-400">Rating</p>
+
+                      <select
+                        value={anime.rating}
+                        onChange={(e) =>
+                          updateRating(anime.id, Number(e.target.value))
+                        }
+                        className="mt-2 rounded-lg border border-slate-600 bg-slate-800 px-3 py-2"
+                      >
+                        <option value={0}>Not Rated</option>
+
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rating) => (
+                          <option key={rating} value={rating}>
+                            {rating}/10
+                          </option>
+                        ))}
+                      </select>
+                      {anime.rating > 0 && (
+                        <p className="mt-2 text-yellow-400">
+                          ★ {anime.rating}/10
+                        </p>
+                      )}
                     </div>
 
                     <p className="mt-2 text-sm text-indigo-400">

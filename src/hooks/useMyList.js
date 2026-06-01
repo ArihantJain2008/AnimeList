@@ -38,6 +38,8 @@ function useMyList() {
 
         progress: 0,
 
+        rating: 0,
+
         status,
 
         updatedAt: Date.now(),
@@ -95,13 +97,29 @@ function useMyList() {
     saveList(updatedList);
   }
 
+  function updateRating(id, rating) {
+  const updatedList = myList.map(
+    (anime) =>
+      anime.id === id
+        ? {
+            ...anime,
+            rating,
+            updatedAt: Date.now(),
+          }
+        : anime
+  );
+
+  saveList(updatedList);
+}
+
   return {
-    myList,
-    addAnime,
-    removeAnime,
-    updateStatus,
-    updateProgress,
-  };
+  myList,
+  addAnime,
+  removeAnime,
+  updateStatus,
+  updateProgress,
+  updateRating,
+};
 }
 
 export default useMyList;
