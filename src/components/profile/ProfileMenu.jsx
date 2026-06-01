@@ -4,13 +4,23 @@ import { Link } from "react-router-dom";
 function ProfileMenu() {
   const [open, setOpen] = useState(false);
 
+  const username = "Arihant Jain";
+  localStorage.getItem("username") ||
+  "Arihant Jain";
+
+  const initials = username
+    .split(" ")
+    .map((name) => name[0])
+    .join("")
+    .toUpperCase();
+
   return (
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="rounded-lg px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800"
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 font-bold text-white transition hover:scale-105"
       >
-        Profile ▼
+        {initials}
       </button>
 
       {open && (

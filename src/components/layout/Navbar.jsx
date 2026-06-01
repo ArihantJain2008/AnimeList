@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import {
-  Link,
-  NavLink,
-} from "react-router-dom";
+import { getTheme } from "../../utils/theme";
+import { Link, NavLink } from "react-router-dom";
 import PageContainer from "./PageContainer";
 import Button from "../ui/Button";
+import ProfileMenu from "../profile/ProfileMenu";
 
 const NAV_LINKS = [
   { label: "Home", to: "/" },
@@ -16,50 +15,29 @@ const NAV_LINKS = [
 ];
 
 function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] =
-    useState(false);
-  const [isScrolled, setIsScrolled] =
-    useState(
-      () =>
-        typeof window !== "undefined" &&
-        window.scrollY > 8
-    );
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(
+    () => typeof window !== "undefined" && window.scrollY > 8,
+  );
 
-  const [theme, setTheme] = useState(() => {
-    if (typeof window === "undefined") {
-      return "dark";
-    }
+  const [theme] = useState(() => getTheme());
 
-    return (
-      localStorage.getItem("theme") ||
-      "dark"
-    );
-  });
-
-  useEffect(() => {
-    document.documentElement.classList.toggle(
-      "dark",
-      theme === "dark"
-    );
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+useEffect(() => {
+  document.documentElement.classList.toggle(
+    "dark",
+    theme === "dark"
+  );
+}, [theme]);
 
   useEffect(() => {
     function handleScroll() {
       setIsScrolled(window.scrollY > 8);
     }
 
-    window.addEventListener(
-      "scroll",
-      handleScroll,
-      { passive: true }
-    );
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
-      window.removeEventListener(
-        "scroll",
-        handleScroll
-      );
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -80,10 +58,7 @@ function Navbar() {
     >
       <PageContainer>
         <div className="flex h-16 items-center justify-between">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2"
-          >
+          <Link to="/" className="inline-flex items-center gap-2">
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-blue-500 text-sm font-black text-white">
               AT
             </span>
@@ -98,9 +73,7 @@ function Navbar() {
                 key={item.to}
                 to={item.to}
                 className={linkClass}
-                onClick={() =>
-                  setIsMenuOpen(false)
-                }
+                onClick={() => setIsMenuOpen(false)}
               >
                 {item.label}
               </NavLink>
@@ -108,28 +81,12 @@ function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              onClick={() =>
-                setTheme((current) =>
-                  current === "dark"
-                    ? "light"
-                    : "dark"
-                )
-              }
-              className="px-3"
-              aria-label="Toggle color theme"
-            >
-              {theme === "dark"
-                ? "Light"
-                : "Dark"}
-            </Button>
+            
+            <ProfileMenu />
 
             <Button
               variant="ghost"
-              onClick={() =>
-                setIsMenuOpen((open) => !open)
-              }
+              onClick={() => setIsMenuOpen((open) => !open)}
               className="px-3 md:hidden"
               aria-label="Toggle navigation menu"
             >
@@ -146,9 +103,7 @@ function Navbar() {
                   key={item.to}
                   to={item.to}
                   className={linkClass}
-                  onClick={() =>
-                    setIsMenuOpen(false)
-                  }
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   {item.label}
                 </NavLink>

@@ -40,6 +40,8 @@ function useMyList() {
 
         rating: 0,
 
+        favourite: false,
+
         status,
 
         updatedAt: Date.now(),
@@ -112,6 +114,21 @@ function useMyList() {
   saveList(updatedList);
 }
 
+  function toggleFavorite(id) {
+  const updatedList = myList.map(
+    (anime) =>
+      anime.id === id
+        ? {
+            ...anime,
+            favorite: !anime.favorite,
+            updatedAt: Date.now(),
+          }
+        : anime
+  );
+
+  saveList(updatedList);
+}
+
   return {
   myList,
   addAnime,
@@ -119,6 +136,7 @@ function useMyList() {
   updateStatus,
   updateProgress,
   updateRating,
+  toggleFavorite,
 };
 }
 
