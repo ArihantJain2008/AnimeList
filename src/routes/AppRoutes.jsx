@@ -9,6 +9,9 @@ import MyList from "../pages/MyList";
 import Stats from "../pages/Stats";
 import Settings from "../pages/Settings";
 import Notifications from "../pages/Notifications";
+import Login from "../pages/Login";
+import Register from "../pages/Register";
+// import TestBackend from "../pages/TestBackend";
 
 function AppRoutes() {
   return (
@@ -23,15 +26,12 @@ function AppRoutes() {
       <Route path="/stats" element={<Stats />} />
       <Route path="/notifications" element={<Notifications />} />
       <Route path="/settings" element={<Settings />} />
-      <Route path="/releases" 
-      element={ <Navigate to="/calendar" replace />
-}
-      />
-      <Route
-        path="/calendar"
-        element={<ReleaseCalendar />}
-      />
+      <Route path="/releases" element={ <Navigate to="/calendar" replace /> } />
+      <Route path="/calendar" element={<ReleaseCalendar />} />
       <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      {/* <Route path="/test-backend" element={<TestBackend />} /> */}
     </Routes>
   );
 }
