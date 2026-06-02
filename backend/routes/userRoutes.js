@@ -3,16 +3,28 @@ const express = require("express");
 const router = express.Router();
 
 const authMiddleware = require("../middleware/authMiddleware");
+const {
+  getProfile,
+  updateProfile,
+  updatePassword,
+} = require("../controllers/userController");
 
 router.get(
   "/profile",
   authMiddleware,
-  (req, res) => {
-    res.json({
-      message: "Protected Route Accessed",
-      user: req.user,
-    });
-  }
+  getProfile
+);
+
+router.patch(
+  "/profile",
+  authMiddleware,
+  updateProfile
+);
+
+router.patch(
+  "/password",
+  authMiddleware,
+  updatePassword
 );
 
 module.exports = router;

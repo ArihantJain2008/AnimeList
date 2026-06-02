@@ -3,6 +3,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const listRoutes = require("./routes/listRoutes");
+const feedbackRoutes = require("./routes/feedbackRoutes");
 
 const app = express();
 
@@ -22,6 +23,11 @@ app.use(
 app.use(
   "/api/list",
   listRoutes
+);
+
+app.use(
+  "/api/feedback",
+  feedbackRoutes
 );
 
 app.get("/", (req, res) => {

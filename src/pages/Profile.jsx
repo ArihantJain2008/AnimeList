@@ -2,11 +2,15 @@ import Navbar from "../components/layout/Navbar";
 import PageContainer from "../components/layout/PageContainer";
 import { useState } from "react";
 import { useUser } from "../hooks/useUser";
+import {
+  updatePassword as savePassword,
+  updateProfile as saveProfile,
+} from "../api/userServices";
 
 function Profile() {
   const {
     user,
-    updateUser,
+    setUser,
   } = useUser();
 
   const username =
@@ -21,7 +25,153 @@ function Profile() {
     username.charAt(0).toUpperCase();
 
   const [newUsername, setNewUsername] =
-    useState(username);
+    useState(
+      user?.username?.trim() || ""
+    );
+
+  const [usernameMessage, setUsernameMessage] =
+    useState(null);
+
+  const [passwordMessage, setPasswordMessage] =
+    useState(null);
+
+  const [isSavingUsername, setIsSavingUsername] =
+    useState(false);
+
+  const [isSavingPassword, setIsSavingPassword] =
+    useState(false);
+
+  const [
+    passwordForm,
+    setPasswordForm,
+  ] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  function getErrorMessage(
+    error,
+    fallbackMessage
+  ) {
+    return (
+      error.response?.data
+        ?.message ||
+      fallbackMessage
+    );
+  }
+
+  async function handleUsernameSave() {
+    const trimmedUsername =
+      newUsername.trim();
+
+    if (!trimmedUsername) {
+      setUsernameMessage({
+        type: "error",
+        text: "Username cannot be empty.",
+      });
+      return;
+    }
+
+    if (
+      trimmedUsername ===
+      (user?.username?.trim() || "")
+    ) {
+      setUsernameMessage({
+        type: "success",
+        text: "Username is already up to date.",
+      });
+      return;
+    }
+
+    setIsSavingUsername(true);
+    setUsernameMessage(null);
+
+    try {
+      const updatedUser =
+        await saveProfile(
+          trimmedUsername
+        );
+
+      setUser(updatedUser);
+      setNewUsername(
+        updatedUser.username
+      );
+      setUsernameMessage({
+        type: "success",
+        text: "Username updated successfully.",
+      });
+    } catch (error) {
+      setUsernameMessage({
+        type: "error",
+        text: getErrorMessage(
+          error,
+          "Unable to update username."
+        ),
+      });
+    } finally {
+      setIsSavingUsername(false);
+    }
+  }
+
+  function handlePasswordInputChange(
+    event
+  ) {
+    const {
+      name,
+      value,
+    } = event.target;
+
+    setPasswordForm(
+      (currentPasswordForm) => ({
+        ...currentPasswordForm,
+        [name]: value,
+      })
+    );
+  }
+
+  async function handlePasswordSave() {
+    setIsSavingPassword(true);
+    setPasswordMessage(null);
+
+    try {
+      const response =
+        await savePassword(
+          passwordForm.currentPassword,
+          passwordForm.newPassword,
+          passwordForm.confirmPassword
+        );
+
+      setPasswordForm({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+
+      setPasswordMessage({
+        type: "success",
+        text:
+          response.message ||
+          "Password updated successfully.",
+      });
+    } catch (error) {
+      setPasswordMessage({
+        type: "error",
+        text: getErrorMessage(
+          error,
+          "Unable to update password."
+        ),
+      });
+    } finally {
+      setIsSavingPassword(false);
+    }
+  }
+
+  function getMessageClass(type) {
+    return type === "error"
+      ? "mt-3 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-200"
+      : "mt-3 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200";
+  }
 
   return (
     <>
@@ -57,28 +207,24 @@ function Profile() {
                 />
 
                 <button
-                  onClick={() => {
-                    const trimmedUsername =
-                      newUsername.trim();
-
-                    if (!trimmedUsername) {
-                      alert("Enter a username");
-                      return;
-                    }
-
-                    updateUser({
-                      username:
-                        trimmedUsername,
-                    });
-
-                    setNewUsername(
-                      trimmedUsername
-                    );
-                  }}
-                  className="mt-4 rounded-lg bg-indigo-600 px-5 py-2"
+                  onClick={handleUsernameSave}
+                  disabled={isSavingUsername}
+                  className="mt-4 rounded-lg bg-indigo-600 px-5 py-2 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Save Username
+                  {isSavingUsername
+                    ? "Saving..."
+                    : "Save Username"}
                 </button>
+
+                {usernameMessage && (
+                  <p
+                    className={getMessageClass(
+                      usernameMessage.type
+                    )}
+                  >
+                    {usernameMessage.text}
+                  </p>
+                )}
               </div>
 
               <div className="rounded-xl border border-slate-700 p-5">
@@ -86,28 +232,50 @@ function Profile() {
 
                 <input
                   type="password"
+                  name="currentPassword"
                   placeholder="Current Password"
+                  value={passwordForm.currentPassword}
+                  onChange={handlePasswordInputChange}
                   className="mb-3 w-full rounded-lg border border-slate-600 bg-slate-800 p-3"
                 />
 
                 <input
                   type="password"
+                  name="newPassword"
                   placeholder="New Password"
+                  value={passwordForm.newPassword}
+                  onChange={handlePasswordInputChange}
                   className="mb-3 w-full rounded-lg border border-slate-600 bg-slate-800 p-3"
                 />
 
                 <input
                   type="password"
+                  name="confirmPassword"
                   placeholder="Confirm Password"
+                  value={passwordForm.confirmPassword}
+                  onChange={handlePasswordInputChange}
                   className="w-full rounded-lg border border-slate-600 bg-slate-800 p-3"
                 />
 
                 <button
-                  onClick={() => alert("Password change backend coming soon")}
-                  className="mt-4 rounded-lg bg-indigo-600 px-5 py-2"
+                  onClick={handlePasswordSave}
+                  disabled={isSavingPassword}
+                  className="mt-4 rounded-lg bg-indigo-600 px-5 py-2 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  Change Password
+                  {isSavingPassword
+                    ? "Updating..."
+                    : "Change Password"}
                 </button>
+
+                {passwordMessage && (
+                  <p
+                    className={getMessageClass(
+                      passwordMessage.type
+                    )}
+                  >
+                    {passwordMessage.text}
+                  </p>
+                )}
               </div>
             </div>
           </div>
