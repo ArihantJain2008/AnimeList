@@ -1,40 +1,45 @@
 import Navbar from "../components/layout/Navbar";
 import PageContainer from "../components/layout/PageContainer";
-import useMyList from "../hooks/useMyList";
+import useMyListApi from "../hooks/useMyListApi";
 import { useState } from "react";
 
 function MyList() {
   const {
     myList,
+    loading,
     updateProgress,
     updateRating,
     toggleFavorite,
-  } = useMyList();
+    removeAnime,
+    updateStatus,
+  } = useMyListApi();
 
-  const [filter, setFilter] =
-    useState("All");
+  const [filter, setFilter] = useState("All");
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <PageContainer>
+          <div className="py-10">Loading...</div>
+        </PageContainer>
+      </>
+    );
+  }
 
   const filteredAnime =
     filter === "All"
       ? myList
       : filter === "Favorites"
-      ? myList.filter(
-          (anime) => anime.favorite
-        )
-      : myList.filter(
-          (anime) =>
-            anime.status === filter
-        );
+        ? myList.filter((anime) => anime.favorite)
+        : myList.filter((anime) => anime.status === filter);
 
   return (
     <>
       <Navbar />
-
       <PageContainer>
         <div className="py-10">
-          <h1 className="mb-8 text-4xl font-black">
-            My List
-          </h1>
+          <h1 className="mb-8 text-4xl font-black">My List</h1>
 
           <div className="mb-8 flex flex-wrap gap-3">
             {[
@@ -47,9 +52,7 @@ function MyList() {
             ].map((status) => (
               <button
                 key={status}
-                onClick={() =>
-                  setFilter(status)
-                }
+                onClick={() => setFilter(status)}
                 className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
                   filter === status
                     ? "bg-indigo-600 text-white"
@@ -72,38 +75,54 @@ function MyList() {
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="text-lg font-bold">
-                        {anime.title}
-                      </h3>
+                      <h3 className="text-lg font-bold">{anime.title}</h3>
 
                       <p className="mt-1 text-sm text-indigo-400">
                         {anime.status}
                       </p>
+
+                      <select
+  value={anime.status}
+  onChange={(e) =>
+    updateStatus(
+      anime.id,
+      e.target.value
+    )
+  }
+  className="mt-3 rounded-lg border border-slate-600 bg-slate-800 px-3 py-2"
+>
+  <option value="Watching">
+    Watching
+  </option>
+
+  <option value="Completed">
+    Completed
+  </option>
+
+  <option value="Plan To Watch">
+    Plan To Watch
+  </option>
+
+  <option value="Dropped">
+    Dropped
+  </option>
+</select>
                     </div>
 
+
                     <button
-                      onClick={() =>
-                        toggleFavorite(
-                          anime.id
-                        )
-                      }
+                      onClick={() => toggleFavorite(anime.id)}
                       className="text-2xl transition hover:scale-110"
                     >
-                      {anime.favorite
-                        ? "❤️"
-                        : "🤍"}
+                      {anime.favorite ? "❤️" : "🤍"}
                     </button>
                   </div>
 
                   <div className="mt-5">
-                    <p className="text-sm text-slate-400">
-                      Progress
-                    </p>
+                    <p className="text-sm text-slate-400">Progress</p>
 
                     <p className="font-semibold">
-                      {anime.progress} /{" "}
-                      {anime.totalEpisodes ||
-                        "?"}
+                      {anime.progress} / {anime.totalEpisodes || "?"}
                     </p>
                   </div>
 
@@ -112,87 +131,57 @@ function MyList() {
                       onClick={() =>
                         updateProgress(
                           anime.id,
-                          Math.max(
-                            anime.progress -
-                              1,
-                            0
-                          )
+                          Math.max(anime.progress - 1, 0),
                         )
                       }
-                      className="rounded-lg bg-slate-700 px-3 py-1"
                     >
                       -
                     </button>
 
-                    <span>
-                      {anime.progress}
-                    </span>
+                    <span>{anime.progress}</span>
 
                     <button
                       onClick={() =>
-                        updateProgress(
-                          anime.id,
-                          anime.progress +
-                            1
-                        )
+                        updateProgress(anime.id, anime.progress + 1)
                       }
-                      className="rounded-lg bg-indigo-600 px-3 py-1"
                     >
                       +
                     </button>
                   </div>
 
                   <div className="mt-5">
-                    <p className="text-sm text-slate-400">
-                      Rating
-                    </p>
+                    <p className="text-sm text-slate-400">Rating</p>
 
                     <select
-                      value={
-                        anime.rating
-                      }
+                      value={anime.rating}
                       onChange={(e) =>
-                        updateRating(
-                          anime.id,
-                          Number(
-                            e.target.value
-                          )
-                        )
+                        updateRating(anime.id, Number(e.target.value))
                       }
                       className="mt-2 rounded-lg border border-slate-600 bg-slate-800 px-3 py-2"
                     >
-                      <option value={0}>
-                        Not Rated
-                      </option>
+                      <option value={0}>Not Rated</option>
 
-                      {[
-                        1, 2, 3, 4, 5,
-                        6, 7, 8, 9, 10,
-                      ].map(
-                        (rating) => (
-                          <option
-                            key={rating}
-                            value={
-                              rating
-                            }
-                          >
-                            {rating}/10
-                          </option>
-                        )
-                      )}
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((rating) => (
+                        <option key={rating} value={rating}>
+                          {rating}/10
+                        </option>
+                      ))}
                     </select>
 
-                    {anime.rating >
-                      0 && (
+                    {anime.rating > 0 && (
                       <p className="mt-2 text-yellow-400">
-                        ★{" "}
-                        {
-                          anime.rating
-                        }
+                        ★ {anime.rating}
                         /10
                       </p>
                     )}
                   </div>
+
+                  <button
+                    onClick={() => removeAnime(anime.id)}
+                    className="mt-4 w-full rounded-lg bg-red-600 px-4 py-2"
+                  >
+                    Remove
+                  </button>
                 </div>
               ))}
             </div>

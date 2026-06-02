@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../api/authServices";
+import { useUser } from "../hooks/useUser";
 
 function Login() {
   const navigate = useNavigate();
+  const { setUser } = useUser();
 
   const [email, setEmail] =
     useState("");
@@ -26,10 +28,7 @@ function Login() {
         data.token
       );
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(data.user)
-      );
+      setUser(data.user);
 
       navigate("/");
     } catch (error) {

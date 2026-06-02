@@ -10,11 +10,11 @@ import Card from "../components/ui/Card";
 import SectionTitle from "../components/ui/SectionTitle";
 import { getAnimeDetails } from "../api/anilist";
 import { sanitizeDescriptionToText } from "../utils/descriptionHelpers";
-import useMyList from "../hooks/useMyList";
+import useMyListApi from "../hooks/useMyListApi";
 
 function AnimeDetails() {
   const { id } = useParams();
-  const { addAnime } = useMyList();
+  const { addAnime } = useMyListApi();
   const [anime, setAnime] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

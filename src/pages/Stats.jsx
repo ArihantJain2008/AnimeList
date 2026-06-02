@@ -1,9 +1,9 @@
 import Navbar from "../components/layout/Navbar";
 import PageContainer from "../components/layout/PageContainer";
-import useMyList from "../hooks/useMyList";
+import useMyListApi from "../hooks/useMyListApi";
 
 function Stats() {
-  const { myList } = useMyList();
+  const { myList } = useMyListApi();
 
   const total = myList.length;
 
