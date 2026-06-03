@@ -38,7 +38,7 @@ function useMyListApi() {
   try {
     await addAnime({
       anime_id: anime.id,
-      title: anime.title.romaji,
+      title: {english: anime.title.english, romaji: anime.title.romaji},
       status,
       progress: 0,
       rating: 0,

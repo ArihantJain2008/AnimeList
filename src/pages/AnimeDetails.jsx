@@ -58,7 +58,7 @@ function AnimeDetails() {
                 {anime.bannerImage ? (
                   <img
                     src={anime.bannerImage}
-                    alt={anime.title.romaji}
+                    alt={{english: anime.title.english, romaji: anime.title.romaji} }
                     className="h-[34vh] w-full object-cover sm:h-[40vh] lg:h-[46vh]"
                   />
                 ) : (
@@ -72,7 +72,8 @@ function AnimeDetails() {
                     Anime Details
                   </p>
                   <h1 className="mt-3 text-3xl font-black text-white sm:text-4xl">
-                    {anime.title.romaji}
+                    {anime.title.english ||
+  anime.title.romaji}
                   </h1>
                   {anime.title.english &&
                     anime.title.english !== anime.title.romaji && (
@@ -259,7 +260,7 @@ function AnimeDetails() {
                           >
                             <img
                               src={relation.node.coverImage.large}
-                              alt={relation.node.title.romaji}
+                              alt={relation.node.title.english || relation.node.title.romaji}
                               className="h-52 w-full object-cover"
                             />
 
@@ -269,7 +270,7 @@ function AnimeDetails() {
                               </p>
 
                               <h4 className="mt-2 line-clamp-2 font-semibold text-slate-900 dark:text-slate-100">
-                                {relation.node.title.romaji}
+                                {relation.node.title.english || relation.node.title.romaji}
                               </h4>
                             </div>
                           </Link>
