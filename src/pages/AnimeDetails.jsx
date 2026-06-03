@@ -165,25 +165,34 @@ function AnimeDetails() {
                         <label className="mb-2 block text-sm font-medium">
                           Add To My List
                         </label>
-
-                        <select
-                          className="rounded-lg border border-slate-600 bg-slate-800 px-4 py-2"
-                          onChange={(e) => {
-                            if (e.target.value) {
-                              addAnime(anime, e.target.value);
-                            }
-                          }}
-                        >
-                          <option value="">Select Status</option>
-
-                          <option value="Watching">Watching</option>
-
-                          <option value="Completed">Completed</option>
-
-                          <option value="Plan To Watch">Plan To Watch</option>
-
-                          <option value="Dropped">Dropped</option>
-                        </select>
+                        <div className="relative inline-block min-w-[250px]">
+                          <select
+                            className="
+                            appearance-none
+                            rounded-lg
+                            border
+                          border-slate-600
+                          bg-slate-800
+                            px-4
+                            py-2
+                            pr-10
+                          text-white
+                          focus:border-indigo-500
+                            focus:outline-none
+                                              "
+                            onChange={(e) => {
+                              if (e.target.value) {
+                                addAnime(anime, e.target.value);
+                              }
+                            }}
+                          >
+                            <option value="">Select Status</option>
+                            <option value="Watching">Watching</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Plan To Watch">Plan To Watch</option>
+                            <option value="Dropped">Dropped</option>
+                          </select>
+                        </div>
                       </div>
                     </div>
                   </Card>
