@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 
 import {
   getMyList,
+  addAnime,
   updateAnime,
+  deleteAnime,
 } from "../api/listService";
 
 function useMyListApi() {
@@ -28,6 +30,26 @@ function useMyListApi() {
   useEffect(() => {
     loadList();
   }, []);
+
+  async function addAnimeToList(
+  anime,
+  status
+) {
+  try {
+    await addAnime({
+      anime_id: anime.id,
+      title: anime.title.romaji,
+      status,
+      progress: 0,
+      rating: 0,
+      favorite: false,
+    });
+
+    loadList();
+  } catch (error) {
+    console.error(error);
+  }
+}
 
   async function updateProgress(
     id,
@@ -140,14 +162,15 @@ async function updateStatus(
 }
 
   return {
-    myList,
-    loading,
-    updateProgress,
-    updateRating,
-    toggleFavorite,
-    removeAnime,
-    updateStatus,
-  };
+  myList,
+  loading,
+  addAnime: addAnimeToList,
+  updateProgress,
+  updateRating,
+  toggleFavorite,
+  removeAnime,
+  updateStatus,
+};
 }
 
 export default useMyListApi;
